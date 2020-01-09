@@ -8,19 +8,20 @@ const jwt = require('jsonwebtoken');
 router.get("/get-all", async (req, res) => {
     try {
         const articles = await Article.find();
-        res.json(articles);
+        res.json({ success: true, data: articles });
     } catch(err) {
-        res.status(400).send("Couldn't get all articles");
+        res.json({ success: false, data: "Couldn't get all articles" });
     }
 });
 
 // Get articles of logged user
 router.get("/get", verifyToken, async (req, res) => {
     try {
+        console.log("/get");
         const articles = await Article.find({ "creator.id": req.user._id });
-        res.json(articles);
+        res.json({ success: true, data: articles });
     } catch(err) {
-        res.status(400).send("Couldn't get articles");
+        res.json({ status: false, data: "Couldn't get articles: " + err });
     }
 });
 
@@ -39,7 +40,7 @@ router.post("/post", verifyToken, async (req, res) => {
         const newArticle = await article.save();
         res.json({ success: true, data: newArticle });
     } catch(err) {
-        res.status(400).json({ success: false, data: "Couldn't post article" });
+        res.json({ success: false, data: "Couldn't post article" });
     }
 });
 
@@ -47,15 +48,15 @@ router.post("/post", verifyToken, async (req, res) => {
 router.delete("/delete", verifyToken, async (req, res) => {
     const article = await Article.findById(req.body.articleId);
     if (!article)
-        return res.status(400).send("Article doesn't exist");
+        return res.send({ success: false, data: "Article doesn't exist" });
     if (article.creator.id != req.user._id)
-        return res.status(400).json({ success: false, data: "Access denied" });
+        return res.json({ success: false, data: "Access denied" });
     
     try {
         const result = await Article.deleteOne({ _id: article._id });
-        return res.send("Article has been deleted");
+        return res.json({ success: true, data: "Article has been deleted" });
     } catch(err) {
-        res.send("Article not deleted");
+        res.json({ success: false, data: "Article not deleted" });
     }
 });
 
