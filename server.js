@@ -4,6 +4,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const env = require('./config/env');
 
+const expressGraphql = require('express-graphql');
+const graphql = require('graphql');
+
 const app = express();
 
 app.use(bodyParser.json());

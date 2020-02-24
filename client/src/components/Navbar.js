@@ -1,73 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-
-const StyledDiv = styled("div")`
-    background-color: #F15152;
-    box-shadow: 0px 0px 2px black;
-    color: #70D6FF;
-    box-shadow: 0px 0px 10px black;
-    padding-left: 20rem;
-    padding-right: 20rem;
-    margin: 20px;
-    border-radius: 20px;
-
-    display: flex;
-    justify-content: space-between;
-`;
-
-const StyledDiv1 = styled("div")`
-    display: flex;
-    align-items: stretch;
-`;
-
-const StyledLink = styled(Link)`
-    line-height: 2.5rem;
-    color: #F4D8CD;
-    border: none;
-    font-size: 20px;
-    padding: 20px;
-    transition: 0.5s;
-    outline: none;
-    text-decoration: none;
-    margin: 0;
-
-    :hover {
-        color: white;
-    }
-`;
-
-const LinkH1 = styled(Link)`
-    color: #F4D8CD;
-    outline: none;
-    font-size: 3rem;
-    text-decoration: none;
-    padding: 10px;
-    transition: 0.5s;
-
-    :hover {
-        color: white;
-    }
-`;
-
-const infoColors = {
-    "error": "#b33838",
-    "success": "#38b341",
-    "info": "#5699ff",
-    "warning": "#f2a341"
-}
-
-const MessageDiv = styled("div")`
-    background-color: ${props => infoColors[props.color]};
-    margin: 0;
-    padding: 10px;
-    position: absolute;
-    width: 100%;
-
-    * {
-        margin: 0;
-    }
-`;
+import SimpleLink from './common/SimpleLink';
 
 export default class Navbar extends React.Component {
     cancelNavbar = () => {
@@ -75,40 +9,80 @@ export default class Navbar extends React.Component {
     }
 
     render() {
-
-        let messageDiv = null;
-        if (this.props.color !== "none")
-            messageDiv =
-                <MessageDiv color={this.props.color}>
-                    <p>{this.props.message}</p>
-                </MessageDiv>
-
-        let loginDiv;
-        if (this.props.token)
-            loginDiv = (
-                <StyledDiv1>
-                    <StyledLink onClick={this.cancelNavbar}>{this.props.username}</StyledLink>
-                    <StyledLink to="/" onClick={() => {
-                        this.props.unsetToken();
-                        this.props.setNavbar("success", "You are logged out");
-                    }}>Log out</StyledLink>
-                </StyledDiv1>
-            );
-        else
-            loginDiv = (
-                <StyledDiv1>
-                    <StyledLink to="/signup" onClick={this.cancelNavbar}></StyledLink>
-                </StyledDiv1>
-            );
-
         return (
-            <div>
-                <StyledDiv>
-                    <LinkH1 to="/" onClick={this.cancelNavbar}>Title</LinkH1>
-                    {loginDiv}
-                </StyledDiv>
-                {messageDiv}
-            </div>
+            <NavbarBox>
+                <NavbarTitle>
+                    <SimpleLink to="/">{this.props.title}</SimpleLink>
+                </NavbarTitle>
+                <MessageBox>
+                    <Message color={this.props.navbarColor}>
+                        {this.props.navbarMessage}
+                    </Message>
+                </MessageBox>
+            </NavbarBox>
         );
     }
 };
+
+const MessageBox = styled("div")`
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+`;
+
+const colors = {
+    "error": "#FF3864",
+    "valid": "#38FF87"
+};
+
+const Message = styled("p")`
+    background-color: ${props => colors[props.color]};
+    color: white;
+`;
+
+const NavbarBox = styled("div")`
+    color: white;
+    margin: 10px;
+    padding: 10px;
+    padding-left: 50px;
+    padding-right: 50px;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+`;
+
+const NavbarTitle = styled("h1")`
+    margin: 0;
+    font-weight: 100;
+`;
+
+const NavbarLink = styled(SimpleLink)`
+    background-color: #0CDC8C;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 1);
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    color: black;
+    border-radius: 30px;
+    font-size: 20px;
+    position: relative;
+    left: 0;
+    transition: 0.4s;
+
+    :hover {
+        left: 10px;
+        padding-left: 30px;
+        padding-right: 30px;
+    }
+    :active {
+        background-color: #0ba268;
+    }
+    :visited {
+        color: black;
+    }
+`;

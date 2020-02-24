@@ -2,18 +2,6 @@ import React from 'react';
 import axios from 'axios';
 import styled from 'styled-components';
 
-const Container = styled("div")`
-    display: flex;
-    justify-content: space-around;
-`;
-
-const ArticleBox = styled("div")`
-    background-color: white;
-    color: black;
-    padding: 20px;
-    border-radius: 20px;
-`;
-
 class Article extends React.Component {
     render() {
         return (
@@ -31,17 +19,16 @@ export default class Articles extends React.Component {
     }
 
     componentDidMount() {
-        axios.get("http://localhost:5000/api/article/get", {
-            headers: { "auth-token": this.props.token }
-        }).then(articles => {
-            console.log(articles);
-            if (!articles.data.success) {
-                console.log(`Couldn't article: ${articles.data.data}`);
-                return;
-            }
-            this.setState({ articles: articles.data.data });
-        }).catch(err => {
-            console.log(`Couldn't article: ${err}`);
+        axios.get("http://localhost:5000/api/article/get-all")
+            .then(articles => {
+                console.log(articles);
+                if (!articles.data.success) {
+                    console.log(`Couldn't article: ${articles.data.data}`);
+                    return;
+                }
+                this.setState({ articles: articles.data.data });
+            }).catch(err => {
+                console.log(`Couldn't article: ${err}`);
         });
     }
 
@@ -57,3 +44,17 @@ export default class Articles extends React.Component {
         );
     }
 };
+
+const Container = styled("div")`
+    display: flex;
+    justify-content: flex-start;
+`;
+
+const ArticleBox = styled("div")`
+    background-color: white;
+    color: black;
+    padding: 20px;
+    border-radius: 20px;
+    margin: 10px;
+    border: 5px black solid;
+`;

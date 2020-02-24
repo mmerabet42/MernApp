@@ -2,104 +2,19 @@ import React from 'react';
 import '../App.css';
 import axios from 'axios';
 import styled from 'styled-components';
-import { Redirect } from 'react-router-dom';
+import { Redirect, Link } from 'react-router-dom';
 
-const Container = styled("div")`
-    display: flex;
-    justify-content: center;
-    margin: 0px;
-    color: black;
-`;
-
-const LoginBox = styled("div")`
-    background-color: #9DBF9E;
-    border-top: none;
-    border-bottom: none;
-    margin: 0;
-    margin-top: 10rem;
-    color: white;
-    border-radius: 10px;
-    box-shadow: 2px 2px 20px black;
-    
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-
-    * {
-        margin: 10px;
-    }
-`;
-
-const LoginButton = styled("button")`
-    background-color: #ED9390;
-    color: #F4D8CD;
-    border: none;
-    margin: 0;
-    padding: 10px;  
-    width: 100%;
-    font-size: 2rem;
-    cursor: pointer;
-    transition: 0.5s;
-    outline: none;
-    border-radius: 10px;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-
-    :hover {
-        color: white;
-        background-color: #F15152;
-
-    }
-`;
-
-const LoginInput = styled("input")`
-    padding: 10px;
-    border: none;
-    border-bottom: 1px #F4D8CD solid;
-    background-color: transparent;
-    outline: none;
-    color: white;
-    font-weight: 100;
-    margin: 20px;   
-    margin-right: 50px;
-    margin-left: 50px;
-    font-size: 1.5rem;
-    transition: 1s;
-
-    ::placeholder {
-        color: #F4D8CD;
-    }
-`;
-
-const LoginTitle = styled("h1")`
-    color: white;
-    margin: 0;
-    padding: 10px;
-    font-family: sans-serif;
-
-`;
+import AnimatedInput from './common/AnimatedInput';
 
 export default class Login extends React.Component {
-    state = {
-        username: String,
-        password: String,
-        redirect: false
-    }
-
-    sendLogin = async () => {
-        try {
-            const result = await axios.post("http://localhost:5000/api/user/login", {
-                username: this.state.username,
-                password: this.state.password
-            });
-            if (!result.data.success)
-                return this.props.setNavbar("error", result.data.data);
-            this.props.setNavbar("success", "You are logged");
-            this.props.setToken(result.data.data, this.state.username);
-            this.setState({ redirect: true });
-        } catch (err) {
-            this.props.setNavbar("error", "Wrong username or password");
+    constructor(props) {
+        super(props);
+        this.state = {
+            username: String,
+            password: String,
+            redirect: false
         }
+        this.props.setTitle("Login");
     }
 
     render() {
@@ -109,11 +24,76 @@ export default class Login extends React.Component {
         return (
             <Container>
                 <LoginBox>
-                    <LoginInput placeholder="Username" onChange={e => this.setState({ username: e.target.value })} />
-                    <LoginInput placeholder="Password" type="password" onChange={e => this.setState({ password: e.target.value })} />
-                    <LoginButton onClick={this.sendLogin}>Login</LoginButton>
+                    <AnimatedInput
+                        className="animatedInput"
+                        type="text"
+                        label="Username"
+                        focusColor="#FF2D66"
+                        validColor="#0CC2AB"
+                        transitionSpeed="0.3s"
+                        onHoverSize="10px"
+                        onChange={e => this.setState({ username: e.target.value })}
+                        />
+                    <AnimatedInput
+                        className="animatedInput"
+                        type="password"
+                        label="Password"
+                        focusColor="#FF2D66"
+                        validColor="#0CC2AB"
+                        transitionSpeed="0.3s"
+                        onChange={e => this.setState({ password: e.target.value })}
+                        />
+                    <LoginButton onClick={() => this.props.sendLogin(this.state.username, this.state.password)}>
+                        Login
+                    </LoginButton>
+                    <p>Don't have an account ? <Link to="/register">Register.</Link></p>
                 </LoginBox>
             </Container>
         );
     }
 };
+
+const Container = styled("div")`
+    display: flex;
+    justify-content: center;
+    margin: 0px;
+    color: black;
+    background-color: white;
+    box-shadow: 0px 2px 10px rgba(0, 0, 0, 0.5);
+`;
+
+const LoginBox = styled("div")`
+    border-top: none;
+    border-bottom: none;
+    width: 30%;
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    .animatedInput {
+        width: 100%;
+        font-size: 20px;
+        margin: 20px;
+    }
+`;
+
+const LoginButton = styled("button")`
+    background-color: #0CDC8C;
+    color: black;
+    border: none;
+    margin: 0;
+    padding: 10px;  
+    width: 100%;
+    font-size: 2rem;
+    cursor: pointer;
+    transition: 0.5s;
+    outline: none;
+    /* border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px; */
+
+    :hover {
+        color: black;
+        background-color: #08AD6E;
+    }
+`;
